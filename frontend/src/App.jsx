@@ -31,8 +31,6 @@ function App() {
     try {
       const apiUrl = `${BACKEND_URL.replace(/\/$/, "")}/api/debug`;
 
-      console.log("DebugSense API:", apiUrl);
-
       const response = await fetch(apiUrl, {
         method: "POST",
         headers: {
@@ -82,6 +80,149 @@ function App() {
     setMessage("");
   };
 
+  /*
+   * Convert the AI's markdown response into
+   * readable sections.
+   */
+  const formatAIResponse = (text) => {
+    if (!text) return null;
+
+    const sections = [];
+
+    const cleaned = text
+      .replace(/\r\n/g, "\n")
+      .replace(/```[a-zA-Z0-9+#.-]*/g, "```");
+
+    const parts = cleaned.split("```");
+
+    let normalText = parts[0] || "";
+
+    const codeBlocks = [];
+
+    for (let i = 1; i < parts.length; i += 2) {
+      if (parts[i]) {
+        codeBlocks.push(parts[i].trim());
+      }
+    }
+
+    /*
+     * Look for common headings from AI responses.
+     */
+    const headingRegex =
+      /(Problem|Issue|Cause|Why.*?(?:happened|occurs)|Explanation|Solution|Fix|Corrected Code|Correct Code|How to Fix|Recommendation)/gi;
+
+    const lines = normalText
+      .split("\n")
+      .map((line) => line.trim())
+      .filter(Boolean);
+
+    let currentHeading = "Analysis";
+    let currentContent = [];
+
+    const flushSection = () => {
+      if (currentContent.length > 0) {
+        sections.push({
+          heading: currentHeading,
+          content: currentContent.join("\n"),
+        });
+      }
+    };
+
+    lines.forEach((line) => {
+      const match = line.match(
+        /^(?:#+\s*|[-*]\s*)?(Problem|Issue|Cause|Explanation|Solution|Fix|Corrected Code|Correct Code|How to Fix|Recommendation)\s*:?\s*(.*)$/i
+      );
+
+      if (match) {
+        flushSection();
+
+        currentHeading = match[1];
+
+        currentContent = match[2]
+          ? [match[2]]
+          : [];
+
+        return;
+      }
+
+      currentContent.push(line);
+    });
+
+    flushSection();
+
+    /*
+     * If the AI didn't use headings, display the
+     * entire response cleanly as one explanation.
+     */
+    if (sections.length === 0 && normalText.trim()) {
+      sections.push({
+        heading: "AI Analysis",
+        content: normalText.trim(),
+      });
+    }
+
+    return (
+      <div className="ai-result">
+
+        {sections.map((section, index) => (
+          <div className="ai-section" key={index}>
+
+            <div className="ai-section-title">
+              {section.heading === "Problem" && "🔍"}
+              {section.heading === "Issue" && "🔍"}
+              {section.heading === "Cause" && "⚙️"}
+              {section.heading === "Explanation" && "📖"}
+              {section.heading === "Solution" && "✅"}
+              {section.heading === "Fix" && "✅"}
+              {section.heading === "Recommendation" && "💡"}
+              {section.heading === "How to Fix" && "🛠️"}
+              {![
+                "Problem",
+                "Issue",
+                "Cause",
+                "Explanation",
+                "Solution",
+                "Fix",
+                "Recommendation",
+                "How to Fix",
+              ].includes(section.heading) && "✦"}
+
+              <span>{section.heading}</span>
+            </div>
+
+            <div className="ai-section-content">
+              {section.content}
+            </div>
+          </div>
+        ))}
+
+        {codeBlocks.length > 0 && (
+          <div className="corrected-code-section">
+
+            <div className="corrected-code-header">
+              <div>
+                <span className="code-check">✓</span>
+                <span>Corrected Code</span>
+              </div>
+
+              <span className="code-language">
+                {language}
+              </span>
+            </div>
+
+            {codeBlocks.map((block, index) => (
+              <div className="corrected-code" key={index}>
+                <pre>
+                  <code>{block}</code>
+                </pre>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  };
+
   return (
     <div className="app">
 
@@ -109,12 +250,15 @@ function App() {
         </div>
       </nav>
 
-      {/* HERO */}
+      {/* MAIN */}
       <main className="main">
 
+        {/* HERO */}
         <section className="hero">
+
           <div className="hero-tag">
-            <span>✦</span> AI POWERED DEBUGGING
+            <span>✦</span>
+            AI POWERED DEBUGGING
           </div>
 
           <h1>
@@ -124,35 +268,48 @@ function App() {
           </h1>
 
           <p>
-            Paste your code and error message. DebugSense AI
-            analyzes the problem and gives you a clear,
-            actionable solution.
+            Paste your code and error message.
+            DebugSense AI analyzes the problem
+            and provides a clear solution.
           </p>
+
         </section>
 
-        {/* INPUT AREA */}
+        {/* INPUTS */}
         <section className="workspace">
 
-          {/* CODE PANEL */}
+          {/* CODE */}
           <div className="panel">
 
             <div className="panel-top">
+
               <div className="panel-title">
-                <div className="step">01</div>
+
+                <div className="step">
+                  01
+                </div>
 
                 <div>
                   <h2>CODE</h2>
-                  <p>Enter the code causing the problem</p>
+
+                  <p>
+                    Enter the code causing the problem
+                  </p>
                 </div>
+
               </div>
 
               <span className="required">
                 REQUIRED
               </span>
+
             </div>
 
             <div className="field">
-              <label>LANGUAGE</label>
+
+              <label>
+                LANGUAGE
+              </label>
 
               <select
                 value={language}
@@ -171,19 +328,27 @@ function App() {
                 <option>Go</option>
                 <option>Rust</option>
               </select>
+
             </div>
 
             <div className="field">
+
               <div className="label-row">
-                <label>YOUR CODE</label>
+
+                <label>
+                  YOUR CODE
+                </label>
 
                 <span className="hint">
                   Paste your code here
                 </span>
+
               </div>
 
               <div className="editor">
+
                 <div className="editor-bar">
+
                   <div className="traffic-lights">
                     <span></span>
                     <span></span>
@@ -193,6 +358,7 @@ function App() {
                   <span className="editor-language">
                     {language}
                   </span>
+
                 </div>
 
                 <textarea
@@ -207,38 +373,56 @@ users.map(user => {
 });`}
                   spellCheck="false"
                 />
+
               </div>
+
             </div>
+
           </div>
 
-          {/* ERROR PANEL */}
+          {/* ERROR */}
           <div className="panel">
 
             <div className="panel-top">
+
               <div className="panel-title">
-                <div className="step">02</div>
+
+                <div className="step">
+                  02
+                </div>
 
                 <div>
                   <h2>ERROR</h2>
-                  <p>Paste the exact error message</p>
+
+                  <p>
+                    Paste the exact error message
+                  </p>
                 </div>
+
               </div>
 
               <span className="required">
                 REQUIRED
               </span>
+
             </div>
 
             <div className="field">
+
               <div className="label-row">
-                <label>ERROR MESSAGE</label>
+
+                <label>
+                  ERROR MESSAGE
+                </label>
 
                 <span className="hint">
                   From your compiler or console
                 </span>
+
               </div>
 
               <div className="error-editor">
+
                 <textarea
                   value={error}
                   onChange={(e) =>
@@ -247,35 +431,50 @@ users.map(user => {
                   placeholder="TypeError: Cannot read properties of undefined (reading 'map')"
                   spellCheck="false"
                 />
+
               </div>
+
             </div>
 
             <div className="error-tip">
+
               <span>💡</span>
 
               <div>
                 <strong>Tip</strong>
+
                 <p>
-                  Copy the complete error message including
-                  the error type and line number if available.
+                  Copy the complete error message,
+                  including the line number if available.
                 </p>
               </div>
+
             </div>
+
           </div>
+
         </section>
 
-        {/* MESSAGE */}
+        {/* ERROR MESSAGE */}
         {message && (
           <div className="message-box">
+
             <span>⚠</span>
+
             <div>
-              <strong>Something went wrong</strong>
-              <p>{message}</p>
+              <strong>
+                Something went wrong
+              </strong>
+
+              <p>
+                {message}
+              </p>
             </div>
+
           </div>
         )}
 
-        {/* ACTIONS */}
+        {/* BUTTONS */}
         <div className="actions">
 
           <button
@@ -297,25 +496,26 @@ users.map(user => {
                 ANALYZING...
               </>
             ) : (
-              <>
-                ✦ ANALYZE ERROR
-              </>
+              <>✦ ANALYZE ERROR</>
             )}
           </button>
+
         </div>
 
-        {/* RESULT */}
+        {/* AI RESULT */}
         {result && (
           <section className="result-panel">
 
             <div className="result-top">
 
               <div className="result-heading">
+
                 <div className="result-icon">
                   ✓
                 </div>
 
                 <div>
+
                   <div className="result-label">
                     03 — AI ANALYSIS
                   </div>
@@ -323,21 +523,24 @@ users.map(user => {
                   <h2>
                     Debugging Analysis
                   </h2>
+
                 </div>
+
               </div>
 
               <div className="result-status">
                 ANALYSIS COMPLETE
               </div>
+
             </div>
 
             <div className="result-body">
-              <pre>{result}</pre>
+              {formatAIResponse(result)}
             </div>
+
           </section>
         )}
 
-        {/* FOOT NOTE */}
         <div className="security-note">
           <span>●</span>
           Your code is analyzed securely through DebugSense AI
@@ -345,8 +548,8 @@ users.map(user => {
 
       </main>
 
-      {/* FOOTER */}
       <footer className="footer">
+
         <span>
           DEBUGSENSE AI © 2026
         </span>
@@ -354,7 +557,9 @@ users.map(user => {
         <span>
           Built for developers
         </span>
+
       </footer>
+
     </div>
   );
 }

@@ -1,5 +1,9 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap");
 
+/* =========================================================
+   GLOBAL
+   ========================================================= */
+
 * {
   box-sizing: border-box;
 }
@@ -12,8 +16,10 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
+
   background: #05080d;
   color: #eef7ff;
+
   font-family: "Inter", sans-serif;
 }
 
@@ -31,6 +37,7 @@ button {
   min-height: 100vh;
   position: relative;
   overflow-x: hidden;
+
   background:
     radial-gradient(
       circle at 50% -10%,
@@ -45,13 +52,17 @@ button {
     #05080d;
 }
 
-/* GRID BACKGROUND */
+/* =========================================================
+   BACKGROUND GRID
+   ========================================================= */
 
 .app::before {
   content: "";
   position: fixed;
   inset: 0;
+
   pointer-events: none;
+
   opacity: 0.15;
 
   background-image:
@@ -74,28 +85,33 @@ button {
   );
 }
 
-/* NAVBAR */
+/* =========================================================
+   NAVBAR
+   ========================================================= */
 
 .navbar {
   height: 78px;
+
   padding: 0 clamp(20px, 6vw, 90px);
 
   display: flex;
   align-items: center;
   justify-content: space-between;
 
+  position: relative;
+  z-index: 10;
+
   border-bottom: 1px solid rgba(105, 189, 255, 0.12);
 
   background: rgba(5, 9, 15, 0.82);
-  backdrop-filter: blur(18px);
 
-  position: relative;
-  z-index: 10;
+  backdrop-filter: blur(18px);
 }
 
 .brand {
   display: flex;
   align-items: center;
+
   gap: 13px;
 }
 
@@ -123,8 +139,10 @@ button {
 
 .brand-name {
   font-family: "Space Grotesk", sans-serif;
+
   font-weight: 700;
   font-size: 18px;
+
   letter-spacing: 0.2px;
 }
 
@@ -134,7 +152,9 @@ button {
 
 .brand-subtitle {
   margin-top: 2px;
+
   color: #607585;
+
   font-size: 10px;
   letter-spacing: 0.8px;
 }
@@ -142,12 +162,14 @@ button {
 .online {
   display: flex;
   align-items: center;
+
   gap: 8px;
 
   color: #63dca0;
 
   font-size: 9px;
   font-weight: 600;
+
   letter-spacing: 1.5px;
 }
 
@@ -162,10 +184,13 @@ button {
   box-shadow: 0 0 12px #55dfa0;
 }
 
-/* MAIN */
+/* =========================================================
+   MAIN
+   ========================================================= */
 
 .main {
   width: min(1120px, calc(100% - 40px));
+
   margin: auto;
 
   padding: 72px 0 60px;
@@ -174,22 +199,28 @@ button {
   z-index: 1;
 }
 
-/* HERO */
+/* =========================================================
+   HERO
+   ========================================================= */
 
 .hero {
-  text-align: center;
   max-width: 760px;
+
   margin: 0 auto 60px;
+
+  text-align: center;
 }
 
 .hero-tag {
   display: inline-flex;
   align-items: center;
+
   gap: 8px;
 
   padding: 7px 13px;
 
   border: 1px solid rgba(0, 188, 255, 0.25);
+
   border-radius: 100px;
 
   background: rgba(0, 188, 255, 0.045);
@@ -198,6 +229,7 @@ button {
 
   font-size: 9px;
   font-weight: 600;
+
   letter-spacing: 1.7px;
 }
 
@@ -209,8 +241,11 @@ button {
   margin: 23px 0 18px;
 
   font-family: "Space Grotesk", sans-serif;
+
   font-size: clamp(42px, 7vw, 72px);
+
   line-height: 0.98;
+
   letter-spacing: -2.8px;
 }
 
@@ -229,23 +264,31 @@ button {
 
 .hero p {
   max-width: 620px;
+
   margin: auto;
 
   color: #718594;
 
   font-size: 14px;
+
   line-height: 1.8;
 }
 
-/* WORKSPACE */
+/* =========================================================
+   WORKSPACE
+   ========================================================= */
 
 .workspace {
   display: grid;
+
   grid-template-columns: 1.25fr 0.75fr;
+
   gap: 18px;
 }
 
-/* PANEL */
+/* =========================================================
+   PANELS
+   ========================================================= */
 
 .panel {
   min-width: 0;
@@ -253,6 +296,7 @@ button {
   padding: 26px;
 
   border: 1px solid rgba(94, 184, 235, 0.14);
+
   border-radius: 16px;
 
   background:
@@ -265,17 +309,24 @@ button {
   box-shadow:
     0 20px 60px rgba(0, 0, 0, 0.2),
     inset 0 1px rgba(255, 255, 255, 0.025);
+
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s ease;
 }
 
 .panel:hover {
   border-color: rgba(0, 190, 255, 0.22);
 }
 
-/* PANEL HEADER */
+/* =========================================================
+   PANEL HEADER
+   ========================================================= */
 
 .panel-top {
   display: flex;
   align-items: center;
+
   gap: 13px;
 
   margin-bottom: 25px;
@@ -284,6 +335,7 @@ button {
 .panel-title {
   display: flex;
   align-items: center;
+
   gap: 13px;
 }
 
@@ -301,6 +353,7 @@ button {
   color: #1ec5ff;
 
   font-family: "Space Grotesk", sans-serif;
+
   font-size: 11px;
 }
 
@@ -308,7 +361,9 @@ button {
   margin: 0;
 
   font-family: "Space Grotesk", sans-serif;
+
   font-size: 12px;
+
   letter-spacing: 1.5px;
 }
 
@@ -327,10 +382,13 @@ button {
 
   font-size: 8px;
   font-weight: 600;
+
   letter-spacing: 1.2px;
 }
 
-/* FIELDS */
+/* =========================================================
+   FIELDS
+   ========================================================= */
 
 .field {
   margin-top: 20px;
@@ -346,6 +404,7 @@ button {
 
   font-size: 9px;
   font-weight: 600;
+
   letter-spacing: 1.3px;
 }
 
@@ -357,10 +416,13 @@ button {
 
 .hint {
   color: #405665;
+
   font-size: 9px;
 }
 
-/* SELECT */
+/* =========================================================
+   SELECT
+   ========================================================= */
 
 select {
   width: 100%;
@@ -372,6 +434,7 @@ select {
   background: #060e16;
 
   border: 1px solid rgba(94, 184, 235, 0.14);
+
   border-radius: 8px;
 
   outline: none;
@@ -381,14 +444,20 @@ select {
 
 select:focus {
   border-color: rgba(0, 190, 255, 0.5);
+
+  box-shadow:
+    0 0 0 3px rgba(0, 190, 255, 0.05);
 }
 
-/* EDITOR */
+/* =========================================================
+   CODE EDITOR
+   ========================================================= */
 
 .editor {
   overflow: hidden;
 
   border: 1px solid rgba(94, 184, 235, 0.13);
+
   border-radius: 10px;
 
   background: #03080d;
@@ -410,19 +479,24 @@ select:focus {
 
 .traffic-lights {
   display: flex;
+
   gap: 6px;
 }
 
 .traffic-lights span {
   width: 7px;
   height: 7px;
+
   border-radius: 50%;
+
   background: #29404e;
 }
 
 .editor-language {
   color: #496271;
+
   font-size: 8px;
+
   letter-spacing: 1px;
 }
 
@@ -441,9 +515,14 @@ textarea {
 
   color: #c8e8f5;
 
-  font-family: "JetBrains Mono", Consolas, monospace;
+  font-family:
+    "JetBrains Mono",
+    "Fira Code",
+    Consolas,
+    monospace;
 
   font-size: 12px;
+
   line-height: 1.75;
 
   padding: 17px;
@@ -459,12 +538,15 @@ textarea:focus {
   outline: none;
 }
 
-/* ERROR */
+/* =========================================================
+   ERROR EDITOR
+   ========================================================= */
 
 .error-editor {
   overflow: hidden;
 
   border: 1px solid rgba(255, 96, 117, 0.12);
+
   border-radius: 10px;
 
   background: rgba(25, 6, 10, 0.28);
@@ -472,17 +554,25 @@ textarea:focus {
 
 .error-editor textarea {
   min-height: 140px;
+
   color: #ffb2bd;
 }
 
+/* =========================================================
+   ERROR TIP
+   ========================================================= */
+
 .error-tip {
   display: flex;
+
   gap: 10px;
 
   margin-top: 17px;
+
   padding: 13px;
 
   border: 1px solid rgba(255, 190, 80, 0.09);
+
   border-radius: 9px;
 
   background: rgba(255, 190, 80, 0.025);
@@ -494,6 +584,7 @@ textarea:focus {
 
 .error-tip strong {
   color: #bda77b;
+
   font-size: 10px;
 }
 
@@ -503,19 +594,25 @@ textarea:focus {
   color: #6f6a59;
 
   font-size: 9px;
+
   line-height: 1.5;
 }
 
-/* MESSAGE */
+/* =========================================================
+   ERROR MESSAGE
+   ========================================================= */
 
 .message-box {
   display: flex;
+
   gap: 12px;
 
   margin-top: 18px;
+
   padding: 15px 17px;
 
   border: 1px solid rgba(255, 75, 100, 0.25);
+
   border-radius: 11px;
 
   background: rgba(70, 10, 20, 0.3);
@@ -539,11 +636,15 @@ textarea:focus {
   font-size: 10px;
 }
 
-/* ACTIONS */
+/* =========================================================
+   ACTION BUTTONS
+   ========================================================= */
 
 .actions {
   display: flex;
+
   justify-content: flex-end;
+
   gap: 11px;
 
   margin: 22px 0 0;
@@ -557,7 +658,9 @@ textarea:focus {
   padding: 0 22px;
 
   font-size: 10px;
+
   font-weight: 700;
+
   letter-spacing: 1px;
 
   cursor: pointer;
@@ -578,6 +681,7 @@ textarea:focus {
 
 .clear-btn:hover {
   color: #a8c1cd;
+
   border-color: rgba(105, 151, 174, 0.35);
 }
 
@@ -607,11 +711,15 @@ textarea:focus {
 
 .actions button:disabled {
   opacity: 0.55;
+
   cursor: not-allowed;
+
   transform: none;
 }
 
-/* SPINNER */
+/* =========================================================
+   LOADING SPINNER
+   ========================================================= */
 
 .spinner {
   width: 12px;
@@ -622,6 +730,7 @@ textarea:focus {
   margin-right: 8px;
 
   border: 2px solid rgba(255, 255, 255, 0.3);
+
   border-top-color: white;
 
   border-radius: 50%;
@@ -635,7 +744,9 @@ textarea:focus {
   }
 }
 
-/* RESULT */
+/* =========================================================
+   AI RESULT PANEL
+   ========================================================= */
 
 .result-panel {
   margin-top: 25px;
@@ -643,6 +754,7 @@ textarea:focus {
   overflow: hidden;
 
   border: 1px solid rgba(77, 226, 164, 0.2);
+
   border-radius: 16px;
 
   background:
@@ -660,7 +772,9 @@ textarea:focus {
   padding: 23px 25px;
 
   display: flex;
+
   align-items: center;
+
   justify-content: space-between;
 
   border-bottom: 1px solid rgba(77, 226, 164, 0.1);
@@ -668,7 +782,9 @@ textarea:focus {
 
 .result-heading {
   display: flex;
+
   align-items: center;
+
   gap: 13px;
 }
 
@@ -692,7 +808,9 @@ textarea:focus {
   color: #57c996;
 
   font-size: 8px;
+
   font-weight: 700;
+
   letter-spacing: 1.3px;
 }
 
@@ -710,43 +828,188 @@ textarea:focus {
   color: #59c997;
 
   font-size: 8px;
+
   font-weight: 600;
+
   letter-spacing: 1px;
 }
 
+/* =========================================================
+   AI RESULT CONTENT
+   ========================================================= */
+
 .result-body {
-  padding: 25px;
+  padding: 26px;
 }
 
-.result-body pre {
+.ai-result {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 18px;
+}
+
+.ai-section {
+  padding: 20px;
+
+  border: 1px solid rgba(94, 184, 235, 0.1);
+
+  border-radius: 12px;
+
+  background: rgba(3, 10, 16, 0.7);
+}
+
+.ai-section-title {
+  display: flex;
+
+  align-items: center;
+
+  gap: 9px;
+
+  margin-bottom: 12px;
+
+  color: #5dd9ff;
+
+  font-size: 11px;
+
+  font-weight: 700;
+
+  letter-spacing: 1.1px;
+
+  text-transform: uppercase;
+}
+
+.ai-section-content {
+  color: #b8cbd4;
+
+  font-size: 13px;
+
+  line-height: 1.8;
+
+  white-space: pre-wrap;
+
+  word-break: break-word;
+}
+
+/* =========================================================
+   CORRECTED CODE CARD
+   ========================================================= */
+
+.corrected-code-section {
+  overflow: hidden;
+
+  border: 1px solid rgba(75, 224, 163, 0.25);
+
+  border-radius: 12px;
+
+  background: #03080d;
+
+  box-shadow:
+    0 15px 40px rgba(0, 0, 0, 0.2);
+}
+
+.corrected-code-header {
+  min-height: 52px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  padding: 0 17px;
+
+  border-bottom: 1px solid rgba(75, 224, 163, 0.12);
+
+  background: rgba(75, 224, 163, 0.035);
+
+  color: #65dfa8;
+
+  font-size: 11px;
+
+  font-weight: 700;
+
+  letter-spacing: 0.8px;
+}
+
+.corrected-code-header > div {
+  display: flex;
+
+  align-items: center;
+
+  gap: 9px;
+}
+
+.code-check {
+  width: 22px;
+  height: 22px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 6px;
+
+  background: rgba(75, 224, 163, 0.1);
+
+  color: #64e2a7;
+}
+
+.code-language {
+  padding: 5px 9px;
+
+  border: 1px solid rgba(75, 224, 163, 0.15);
+
+  border-radius: 5px;
+
+  color: #528b75;
+
+  font-size: 8px;
+
+  letter-spacing: 1px;
+}
+
+.corrected-code {
+  overflow-x: auto;
+}
+
+.corrected-code pre {
   margin: 0;
 
   padding: 22px;
 
-  overflow-x: auto;
+  color: #d1edf5;
 
-  border: 1px solid rgba(94, 184, 235, 0.09);
-  border-radius: 10px;
+  font-family:
+    "JetBrains Mono",
+    "Fira Code",
+    Consolas,
+    monospace;
+
+  font-size: 13px;
+
+  line-height: 1.8;
+
+  white-space: pre;
 
   background: #02070b;
-
-  color: #c5e5ee;
-
-  font-family: Consolas, monospace;
-
-  font-size: 12px;
-  line-height: 1.75;
-
-  white-space: pre-wrap;
-  word-break: break-word;
 }
 
-/* SECURITY */
+.corrected-code code {
+  font-family: inherit;
+}
+
+/* =========================================================
+   SECURITY NOTE
+   ========================================================= */
 
 .security-note {
   display: flex;
+
   justify-content: center;
+
   align-items: center;
+
   gap: 7px;
 
   margin-top: 25px;
@@ -758,13 +1021,17 @@ textarea:focus {
 
 .security-note span {
   color: #4fc793;
+
   font-size: 6px;
 }
 
-/* FOOTER */
+/* =========================================================
+   FOOTER
+   ========================================================= */
 
 .footer {
   position: relative;
+
   z-index: 1;
 
   width: min(1120px, calc(100% - 40px));
@@ -774,6 +1041,7 @@ textarea:focus {
   padding: 25px 0 35px;
 
   display: flex;
+
   justify-content: space-between;
 
   border-top: 1px solid rgba(105, 189, 255, 0.08);
@@ -785,7 +1053,32 @@ textarea:focus {
   letter-spacing: 1px;
 }
 
-/* RESPONSIVE */
+/* =========================================================
+   SCROLLBAR
+   ========================================================= */
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #03070b;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #19303d;
+
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #245166;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
 
 @media (max-width: 850px) {
   .workspace {
@@ -800,6 +1093,7 @@ textarea:focus {
 @media (max-width: 600px) {
   .navbar {
     height: 70px;
+
     padding: 0 18px;
   }
 
@@ -822,6 +1116,7 @@ textarea:focus {
 
   .main {
     width: calc(100% - 24px);
+
     padding-top: 45px;
   }
 
@@ -863,15 +1158,37 @@ textarea:focus {
 
   .result-top {
     align-items: flex-start;
+
     gap: 15px;
+
     flex-direction: column;
   }
 
   .result-body {
-    padding: 15px;
+    padding: 14px;
+  }
+
+  .ai-section {
+    padding: 16px;
+  }
+
+  .ai-section-content {
+    font-size: 12px;
+  }
+
+  .corrected-code pre {
+    padding: 16px;
+
+    font-size: 11px;
   }
 
   .footer {
     width: calc(100% - 24px);
+
+    gap: 15px;
+
+    flex-direction: column;
+
+    align-items: center;
   }
 }
