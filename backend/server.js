@@ -10,12 +10,41 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // --------------------------------------------------
-// MIDDLEWARE
+// CORS
 // --------------------------------------------------
+
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:5174",
+  "https://debug-sense-ai-eight.vercel.app",
+];
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: function (origin, callback) {
+      // Allow requests with no origin
+      // such as Postman, PowerShell, etc.
+      if (!origin) {
+        return callback(null, true);
+      }
+
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      console.log("Blocked CORS origin:", origin);
+
+      return callback(
+        new Error("Not allowed by CORS")
+      );
+    },
+
+    methods: ["GET", "POST", "OPTIONS"],
+
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+    ],
   })
 );
 
@@ -69,6 +98,6 @@ app.use((err, req, res, next) => {
 
 app.listen(PORT, () => {
   console.log(
-    `DebugSense AI backend running on http://localhost:${PORT}`
+    `DebugSense AI backend running on port ${PORT}`
   );
 });
