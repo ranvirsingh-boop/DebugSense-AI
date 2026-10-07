@@ -2,35 +2,36 @@ import React, { useState } from "react";
 
 const BACKEND_URL =
   import.meta.env.VITE_BACKEND_URL ||
+  import.meta.env.VITE_API_URL ||
   "https://debugsense-ai-xoft.onrender.com";
 
 function App() {
   const [code, setCode] = useState("");
   const [error, setError] = useState("");
   const [language, setLanguage] = useState("JavaScript");
-  const [result, setResult] = useState(null);
+  const [result, setResult] = useState("");
   const [loading, setLoading] = useState(false);
-  const [systemMessage, setSystemMessage] = useState("");
+  const [message, setMessage] = useState("");
 
   const analyzeError = async () => {
     if (!code.trim()) {
-      setSystemMessage("Please enter your code.");
+      setMessage("Please enter your code.");
       return;
     }
 
     if (!error.trim()) {
-      setSystemMessage("Please enter the error message.");
+      setMessage("Please enter the error message.");
       return;
     }
 
     setLoading(true);
-    setResult(null);
-    setSystemMessage("");
+    setResult("");
+    setMessage("");
 
     try {
       const apiUrl = `${BACKEND_URL.replace(/\/$/, "")}/api/debug`;
 
-      console.log("Sending request to:", apiUrl);
+      console.log("DebugSense API:", apiUrl);
 
       const response = await fetch(apiUrl, {
         method: "POST",
@@ -38,31 +39,35 @@ function App() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          code: code,
-          error: error,
-          language: language,
+          code,
+          error,
+          language,
         }),
       });
 
       const data = await response.json();
 
-      console.log("Backend response:", data);
-
       if (!response.ok) {
         throw new Error(
-          data.message || `Backend returned ${response.status}`
+          data.message || `Server error: ${response.status}`
         );
       }
 
       if (!data.success) {
-        throw new Error(data.message || "Unable to analyze the code.");
+        throw new Error(
+          data.message || "Unable to analyze the code."
+        );
       }
 
-      setResult(data.result);
+      setResult(
+        typeof data.result === "string"
+          ? data.result
+          : JSON.stringify(data.result, null, 2)
+      );
     } catch (err) {
-      console.error("DebugSense AI Error:", err);
+      console.error("DebugSense error:", err);
 
-      setSystemMessage(
+      setMessage(
         err.message || "Unable to connect to the backend."
       );
     } finally {
@@ -73,131 +78,208 @@ function App() {
   const clearAll = () => {
     setCode("");
     setError("");
-    setResult(null);
-    setSystemMessage("");
+    setResult("");
+    setMessage("");
   };
 
   return (
     <div className="app">
-      <header className="header">
-        <div>
-          <h1>DebugSense AI</h1>
-          <p>AI-powered code debugging assistant</p>
-        </div>
 
-        <div className="status">
-          <span className="status-dot"></span>
-          Backend Connected
-        </div>
-      </header>
+      {/* NAVBAR */}
+      <nav className="navbar">
+        <div className="brand">
+          <div className="brand-icon">
+            &lt;/&gt;
+          </div>
 
-      <main className="container">
-        {/* CODE SECTION */}
-        <section className="card">
-          <div className="section-header">
-            <div className="number">01</div>
-
-            <div>
-              <h2>CODE INPUT</h2>
-              <p>Paste the code that is causing the problem.</p>
+          <div>
+            <div className="brand-name">
+              DebugSense<span> AI</span>
             </div>
 
-            <div className="required">REQUIRED</div>
+            <div className="brand-subtitle">
+              Intelligent Code Debugging
+            </div>
+          </div>
+        </div>
+
+        <div className="online">
+          <span className="online-dot"></span>
+          SYSTEM ONLINE
+        </div>
+      </nav>
+
+      {/* HERO */}
+      <main className="main">
+
+        <section className="hero">
+          <div className="hero-tag">
+            <span>✦</span> AI POWERED DEBUGGING
           </div>
 
-          <div className="field">
-            <label>PROGRAMMING LANGUAGE</label>
+          <h1>
+            Find the bug.
+            <br />
+            <span>Fix the code.</span>
+          </h1>
 
-            <select
-              value={language}
-              onChange={(e) => setLanguage(e.target.value)}
-            >
-              <option>JavaScript</option>
-              <option>Python</option>
-              <option>Java</option>
-              <option>C</option>
-              <option>C++</option>
-              <option>C#</option>
-              <option>PHP</option>
-              <option>TypeScript</option>
-            </select>
-          </div>
-
-          <div className="field">
-            <label>YOUR CODE</label>
-
-            <textarea
-              value={code}
-              onChange={(e) => setCode(e.target.value)}
-              placeholder={`Example:
-
-const users = undefined;
-
-users.map(user => user);`}
-              rows={12}
-            />
-          </div>
+          <p>
+            Paste your code and error message. DebugSense AI
+            analyzes the problem and gives you a clear,
+            actionable solution.
+          </p>
         </section>
 
-        {/* ERROR SECTION */}
-        <section className="card">
-          <div className="section-header">
-            <div className="number">02</div>
+        {/* INPUT AREA */}
+        <section className="workspace">
 
-            <div>
-              <h2>ERROR INFORMATION</h2>
-              <p>Paste the error message generated by your program.</p>
+          {/* CODE PANEL */}
+          <div className="panel">
+
+            <div className="panel-top">
+              <div className="panel-title">
+                <div className="step">01</div>
+
+                <div>
+                  <h2>CODE</h2>
+                  <p>Enter the code causing the problem</p>
+                </div>
+              </div>
+
+              <span className="required">
+                REQUIRED
+              </span>
             </div>
 
-            <div className="required">REQUIRED</div>
+            <div className="field">
+              <label>LANGUAGE</label>
+
+              <select
+                value={language}
+                onChange={(e) =>
+                  setLanguage(e.target.value)
+                }
+              >
+                <option>JavaScript</option>
+                <option>Python</option>
+                <option>Java</option>
+                <option>C</option>
+                <option>C++</option>
+                <option>C#</option>
+                <option>TypeScript</option>
+                <option>PHP</option>
+                <option>Go</option>
+                <option>Rust</option>
+              </select>
+            </div>
+
+            <div className="field">
+              <div className="label-row">
+                <label>YOUR CODE</label>
+
+                <span className="hint">
+                  Paste your code here
+                </span>
+              </div>
+
+              <div className="editor">
+                <div className="editor-bar">
+                  <div className="traffic-lights">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                  </div>
+
+                  <span className="editor-language">
+                    {language}
+                  </span>
+                </div>
+
+                <textarea
+                  value={code}
+                  onChange={(e) =>
+                    setCode(e.target.value)
+                  }
+                  placeholder={`const users = undefined;
+
+users.map(user => {
+  console.log(user);
+});`}
+                  spellCheck="false"
+                />
+              </div>
+            </div>
           </div>
 
-          <div className="field">
-            <label>ERROR MESSAGE</label>
+          {/* ERROR PANEL */}
+          <div className="panel">
 
-            <textarea
-              value={error}
-              onChange={(e) => setError(e.target.value)}
-              placeholder="Example: TypeError: Cannot read properties of undefined (reading 'map')"
-              rows={6}
-            />
-          </div>
-        </section>
+            <div className="panel-top">
+              <div className="panel-title">
+                <div className="step">02</div>
 
-        {/* SYSTEM MESSAGE */}
-        {systemMessage && (
-          <div className="system-message">
-            <div className="message-title">⚠ SYSTEM MESSAGE</div>
-            <div className="message-text">{systemMessage}</div>
-          </div>
-        )}
+                <div>
+                  <h2>ERROR</h2>
+                  <p>Paste the exact error message</p>
+                </div>
+              </div>
 
-        {/* RESULT */}
-        {result && (
-          <section className="result-card">
-            <div className="result-header">
-              <div className="number">03</div>
+              <span className="required">
+                REQUIRED
+              </span>
+            </div>
 
-              <div>
-                <h2>AI ANALYSIS</h2>
-                <p>Debugging analysis from DebugSense AI.</p>
+            <div className="field">
+              <div className="label-row">
+                <label>ERROR MESSAGE</label>
+
+                <span className="hint">
+                  From your compiler or console
+                </span>
+              </div>
+
+              <div className="error-editor">
+                <textarea
+                  value={error}
+                  onChange={(e) =>
+                    setError(e.target.value)
+                  }
+                  placeholder="TypeError: Cannot read properties of undefined (reading 'map')"
+                  spellCheck="false"
+                />
               </div>
             </div>
 
-            <div className="result-content">
-              {typeof result === "string" ? (
-                <pre>{result}</pre>
-              ) : (
-                <pre>{JSON.stringify(result, null, 2)}</pre>
-              )}
+            <div className="error-tip">
+              <span>💡</span>
+
+              <div>
+                <strong>Tip</strong>
+                <p>
+                  Copy the complete error message including
+                  the error type and line number if available.
+                </p>
+              </div>
             </div>
-          </section>
+          </div>
+        </section>
+
+        {/* MESSAGE */}
+        {message && (
+          <div className="message-box">
+            <span>⚠</span>
+            <div>
+              <strong>Something went wrong</strong>
+              <p>{message}</p>
+            </div>
+          </div>
         )}
 
-        {/* BUTTONS */}
+        {/* ACTIONS */}
         <div className="actions">
+
           <button
-            className="clear-button"
+            className="clear-btn"
             onClick={clearAll}
             disabled={loading}
           >
@@ -205,14 +287,74 @@ users.map(user => user);`}
           </button>
 
           <button
-            className="analyze-button"
+            className="analyze-btn"
             onClick={analyzeError}
             disabled={loading}
           >
-            {loading ? "ANALYZING..." : "✦ ANALYZE ERROR"}
+            {loading ? (
+              <>
+                <span className="spinner"></span>
+                ANALYZING...
+              </>
+            ) : (
+              <>
+                ✦ ANALYZE ERROR
+              </>
+            )}
           </button>
         </div>
+
+        {/* RESULT */}
+        {result && (
+          <section className="result-panel">
+
+            <div className="result-top">
+
+              <div className="result-heading">
+                <div className="result-icon">
+                  ✓
+                </div>
+
+                <div>
+                  <div className="result-label">
+                    03 — AI ANALYSIS
+                  </div>
+
+                  <h2>
+                    Debugging Analysis
+                  </h2>
+                </div>
+              </div>
+
+              <div className="result-status">
+                ANALYSIS COMPLETE
+              </div>
+            </div>
+
+            <div className="result-body">
+              <pre>{result}</pre>
+            </div>
+          </section>
+        )}
+
+        {/* FOOT NOTE */}
+        <div className="security-note">
+          <span>●</span>
+          Your code is analyzed securely through DebugSense AI
+        </div>
+
       </main>
+
+      {/* FOOTER */}
+      <footer className="footer">
+        <span>
+          DEBUGSENSE AI © 2026
+        </span>
+
+        <span>
+          Built for developers
+        </span>
+      </footer>
     </div>
   );
 }
