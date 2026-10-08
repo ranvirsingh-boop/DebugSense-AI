@@ -1,8 +1,3 @@
-/* =========================================================
-   DEBUGSENSE AI
-   GLOBAL STYLES
-   ========================================================= */
-
 * {
   box-sizing: border-box;
   margin: 0;
@@ -64,7 +59,7 @@ textarea {
 
 ::selection {
   background: rgba(45, 210, 255, 0.25);
-  color: #ffffff;
+  color: white;
 }
 
 
@@ -74,7 +69,6 @@ textarea {
 
 .app {
   min-height: 100vh;
-
   position: relative;
 
   background:
@@ -84,14 +78,10 @@ textarea {
     );
 }
 
-
-/* Subtle grid */
-
 .app::before {
   content: "";
 
   position: fixed;
-
   inset: 0;
 
   pointer-events: none;
@@ -110,13 +100,6 @@ textarea {
     );
 
   background-size: 48px 48px;
-
-  mask-image:
-    linear-gradient(
-      to bottom,
-      black,
-      transparent 85%
-    );
 }
 
 
@@ -126,48 +109,37 @@ textarea {
 
 .navbar {
   width: 100%;
-
   min-height: 72px;
 
   display: flex;
-
   align-items: center;
-
   justify-content: space-between;
 
   padding: 0 5%;
 
   border-bottom: 1px solid rgba(75, 190, 220, 0.1);
 
-  background: rgba(3, 8, 14, 0.75);
+  background: rgba(3, 8, 14, 0.8);
 
   backdrop-filter: blur(16px);
 
   position: sticky;
-
   top: 0;
 
   z-index: 50;
 }
 
-
-/* BRAND */
-
 .brand {
   display: flex;
-
   align-items: center;
-
   gap: 12px;
 }
 
 .brand-icon {
   width: 38px;
-
   height: 38px;
 
   display: grid;
-
   place-items: center;
 
   border-radius: 9px;
@@ -184,23 +156,15 @@ textarea {
   color: #65dfff;
 
   font-size: 11px;
-
   font-weight: 800;
-
   letter-spacing: 1px;
-
-  box-shadow:
-    0 0 20px rgba(0, 180, 255, 0.08);
 }
 
 .brand-name {
   color: #e8f8fc;
 
   font-size: 17px;
-
   font-weight: 800;
-
-  letter-spacing: 0.3px;
 }
 
 .brand-name span {
@@ -213,34 +177,24 @@ textarea {
   color: #5e7c87;
 
   font-size: 7px;
-
   font-weight: 700;
-
   letter-spacing: 1.6px;
 }
 
-
-/* ONLINE */
-
 .online {
   display: flex;
-
   align-items: center;
-
   gap: 8px;
 
   color: #58dba3;
 
   font-size: 8px;
-
   font-weight: 700;
-
   letter-spacing: 1px;
 }
 
 .online-dot {
   width: 7px;
-
   height: 7px;
 
   border-radius: 50%;
@@ -264,7 +218,6 @@ textarea {
   padding: 70px 0 60px;
 
   position: relative;
-
   z-index: 1;
 }
 
@@ -283,9 +236,7 @@ textarea {
 
 .hero-tag {
   display: inline-flex;
-
   align-items: center;
-
   gap: 8px;
 
   margin-bottom: 20px;
@@ -301,16 +252,8 @@ textarea {
   color: #56d5ef;
 
   font-size: 8px;
-
   font-weight: 700;
-
   letter-spacing: 1.5px;
-}
-
-.hero-tag span {
-  color: #67e2ff;
-
-  font-size: 11px;
 }
 
 .hero h1 {
@@ -334,7 +277,6 @@ textarea {
     );
 
   -webkit-background-clip: text;
-
   background-clip: text;
 
   color: transparent;
@@ -359,7 +301,6 @@ textarea {
 
 .workspace {
   display: flex;
-
   flex-direction: column;
 
   gap: 25px;
@@ -367,7 +308,7 @@ textarea {
 
 
 /* =========================================================
-   PANEL
+   PANELS
    ========================================================= */
 
 .panel {
@@ -392,9 +333,7 @@ textarea {
   min-height: 88px;
 
   display: flex;
-
   align-items: center;
-
   justify-content: space-between;
 
   padding: 20px 25px;
@@ -404,7 +343,6 @@ textarea {
 
 .panel-title {
   display: flex;
-
   align-items: center;
 
   gap: 15px;
@@ -412,11 +350,9 @@ textarea {
 
 .step {
   width: 39px;
-
   height: 39px;
 
   display: grid;
-
   place-items: center;
 
   border-radius: 10px;
@@ -428,19 +364,14 @@ textarea {
   color: #48d7f5;
 
   font-size: 10px;
-
   font-weight: 800;
-
-  letter-spacing: 0.5px;
 }
 
 .panel-title h2 {
   color: #b8d0d7;
 
   font-size: 12px;
-
   font-weight: 800;
-
   letter-spacing: 1.3px;
 }
 
@@ -456,15 +387,13 @@ textarea {
   color: #e96e88;
 
   font-size: 8px;
-
   font-weight: 800;
-
   letter-spacing: 1.2px;
 }
 
 
 /* =========================================================
-   FIELDS
+   INPUTS
    ========================================================= */
 
 .field {
@@ -483,34 +412,23 @@ textarea {
   color: #75929c;
 
   font-size: 8px;
-
   font-weight: 800;
-
   letter-spacing: 1.3px;
 }
 
 .label-row {
   display: flex;
-
   align-items: center;
-
   justify-content: space-between;
 }
 
 .hint {
   color: #45636d;
-
   font-size: 8px;
 }
 
-
-/* =========================================================
-   SELECT
-   ========================================================= */
-
 .field select {
   width: 100%;
-
   height: 48px;
 
   padding: 0 14px;
@@ -528,14 +446,6 @@ textarea {
   cursor: pointer;
 
   font-size: 12px;
-
-  transition:
-    border-color 0.2s ease,
-    box-shadow 0.2s ease;
-}
-
-.field select:hover {
-  border-color: rgba(70, 190, 220, 0.28);
 }
 
 .field select:focus {
@@ -564,9 +474,7 @@ textarea {
   height: 34px;
 
   display: flex;
-
   align-items: center;
-
   justify-content: space-between;
 
   padding: 0 12px;
@@ -578,29 +486,15 @@ textarea {
 
 .traffic-lights {
   display: flex;
-
   gap: 6px;
 }
 
 .traffic-lights span {
   width: 7px;
-
   height: 7px;
 
   border-radius: 50%;
 
-  background: #36505a;
-}
-
-.traffic-lights span:nth-child(1) {
-  background: #607078;
-}
-
-.traffic-lights span:nth-child(2) {
-  background: #52676f;
-}
-
-.traffic-lights span:nth-child(3) {
   background: #435961;
 }
 
@@ -608,9 +502,7 @@ textarea {
   color: #456571;
 
   font-size: 7px;
-
   font-weight: 700;
-
   letter-spacing: 1px;
 }
 
@@ -624,7 +516,6 @@ textarea {
   padding: 20px;
 
   border: none;
-
   outline: none;
 
   resize: vertical;
@@ -649,11 +540,6 @@ textarea {
 
 .editor textarea::placeholder {
   color: #2e4b56;
-}
-
-.editor textarea:focus {
-  box-shadow:
-    inset 0 0 0 1px rgba(40, 200, 240, 0.1);
 }
 
 
@@ -681,7 +567,6 @@ textarea {
   padding: 18px;
 
   border: none;
-
   outline: none;
 
   background: transparent;
@@ -705,19 +590,13 @@ textarea {
   color: #4b343b;
 }
 
-.error-editor textarea:focus {
-  box-shadow:
-    inset 0 0 0 1px rgba(230, 80, 115, 0.15);
-}
-
 
 /* =========================================================
-   ERROR TIP
+   TIP
    ========================================================= */
 
 .error-tip {
   display: flex;
-
   align-items: flex-start;
 
   gap: 12px;
@@ -733,15 +612,10 @@ textarea {
   background: rgba(20, 100, 130, 0.035);
 }
 
-.error-tip > span {
-  font-size: 14px;
-}
-
 .error-tip strong {
   color: #6195a3;
 
   font-size: 8px;
-
   letter-spacing: 1px;
 }
 
@@ -762,12 +636,9 @@ textarea {
 
 .message-box {
   display: flex;
-
   align-items: flex-start;
 
   gap: 12px;
-
-  margin-top: 25px;
 
   padding: 17px 20px;
 
@@ -775,23 +646,15 @@ textarea {
 
   border-radius: 12px;
 
-  background:
-    rgba(75, 5, 25, 0.16);
+  background: rgba(75, 5, 25, 0.16);
 
   color: #e98296;
-}
-
-.message-box > span {
-  font-size: 15px;
 }
 
 .message-box strong {
   display: block;
 
-  color: #e98296;
-
   font-size: 8px;
-
   letter-spacing: 1px;
 }
 
@@ -805,14 +668,13 @@ textarea {
 
 
 /* =========================================================
-   ACTIONS
+   BUTTONS
    ========================================================= */
 
 .actions {
   display: flex;
 
   justify-content: flex-end;
-
   align-items: center;
 
   gap: 12px;
@@ -822,7 +684,6 @@ textarea {
 
 .clear-btn {
   min-width: 125px;
-
   height: 48px;
 
   border: 1px solid rgba(100, 150, 165, 0.18);
@@ -834,38 +695,18 @@ textarea {
   color: #708a94;
 
   font-size: 9px;
-
   font-weight: 800;
-
   letter-spacing: 1px;
 
   cursor: pointer;
-
-  transition: 0.2s ease;
 }
-
-.clear-btn:hover {
-  color: #b2cbd2;
-
-  border-color: rgba(100, 180, 200, 0.3);
-}
-
-.clear-btn:disabled {
-  opacity: 0.5;
-}
-
-
-/* ANALYZE BUTTON */
 
 .analyze-btn {
   min-width: 230px;
-
   height: 48px;
 
   display: flex;
-
   align-items: center;
-
   justify-content: center;
 
   border-radius: 10px;
@@ -880,20 +721,14 @@ textarea {
   color: white;
 
   font-size: 9px;
-
   font-weight: 900;
-
   letter-spacing: 1px;
 
   cursor: pointer;
 
-  box-shadow:
-    0 10px 30px rgba(40, 140, 220, 0.15);
-
   transition:
     transform 0.2s ease,
-    box-shadow 0.2s ease,
-    opacity 0.2s ease;
+    box-shadow 0.2s ease;
 }
 
 .analyze-btn:hover {
@@ -909,12 +744,8 @@ textarea {
   transform: none;
 }
 
-
-/* SPINNER */
-
 .spinner {
   width: 13px;
-
   height: 13px;
 
   margin-right: 9px;
@@ -963,9 +794,7 @@ textarea {
   min-height: 100px;
 
   display: flex;
-
   align-items: center;
-
   justify-content: space-between;
 
   padding: 20px 30px;
@@ -975,7 +804,6 @@ textarea {
 
 .result-heading {
   display: flex;
-
   align-items: center;
 
   gap: 15px;
@@ -983,11 +811,9 @@ textarea {
 
 .result-icon {
   width: 43px;
-
   height: 43px;
 
   display: grid;
-
   place-items: center;
 
   border: 1px solid rgba(70, 220, 170, 0.4);
@@ -1005,9 +831,7 @@ textarea {
   color: #50dba2;
 
   font-size: 8px;
-
   font-weight: 800;
-
   letter-spacing: 1.4px;
 }
 
@@ -1023,9 +847,7 @@ textarea {
   color: #4fd9a1;
 
   font-size: 8px;
-
   font-weight: 800;
-
   letter-spacing: 1.2px;
 }
 
@@ -1033,14 +855,8 @@ textarea {
   padding: 30px;
 }
 
-
-/* =========================================================
-   AI RESULT
-   ========================================================= */
-
 .ai-result {
   display: flex;
-
   flex-direction: column;
 
   gap: 18px;
@@ -1048,7 +864,7 @@ textarea {
 
 
 /* =========================================================
-   AI SECTION
+   ANALYSIS CARDS
    ========================================================= */
 
 .ai-section {
@@ -1067,12 +883,8 @@ textarea {
   color: #55d5ed;
 
   font-size: 10px;
-
   font-weight: 800;
-
   letter-spacing: 1px;
-
-  text-transform: uppercase;
 }
 
 .ai-section-content {
@@ -1089,7 +901,7 @@ textarea {
 
 
 /* =========================================================
-   ERROR INFORMATION GRID
+   ERROR INFORMATION
    ========================================================= */
 
 .error-info-grid {
@@ -1117,9 +929,7 @@ textarea {
   color: #53727d;
 
   font-size: 7px;
-
   font-weight: 800;
-
   letter-spacing: 1px;
 }
 
@@ -1127,7 +937,6 @@ textarea {
   color: #a9d0da;
 
   font-size: 12px;
-
   font-weight: 700;
 }
 
@@ -1145,46 +954,122 @@ textarea {
 
 
 /* =========================================================
+   SUGGESTED FIX
+   COMPLETELY SEPARATE FROM ANALYSIS
+   ========================================================= */
+
+.suggested-fix-section {
+  overflow: hidden;
+
+  border: 1px solid rgba(255, 190, 80, 0.22);
+
+  border-radius: 13px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(50, 35, 8, 0.35),
+      rgba(10, 12, 10, 0.75)
+    );
+}
+
+.suggested-fix-header {
+  padding: 17px 20px;
+
+  border-bottom: 1px solid rgba(255, 190, 80, 0.12);
+
+  background: rgba(255, 190, 80, 0.035);
+}
+
+.suggested-fix-title {
+  display: flex;
+  align-items: center;
+
+  gap: 13px;
+}
+
+.fix-icon {
+  width: 38px;
+  height: 38px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 9px;
+
+  background: rgba(255, 190, 80, 0.08);
+
+  border: 1px solid rgba(255, 190, 80, 0.16);
+
+  font-size: 17px;
+}
+
+.fix-label {
+  color: #c49b55;
+
+  font-size: 7px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+}
+
+.suggested-fix-title h3 {
+  margin-top: 4px;
+
+  color: #e1c98f;
+
+  font-size: 15px;
+}
+
+.suggested-fix-body {
+  padding: 20px;
+
+  color: #c3b89b;
+
+  font-size: 12px;
+
+  line-height: 1.85;
+
+  white-space: pre-wrap;
+
+  word-break: break-word;
+}
+
+
+/* =========================================================
    CORRECTED CODE
    ========================================================= */
 
 .corrected-code-section {
   overflow: hidden;
 
-  border: 1px solid rgba(75, 224, 163, 0.25);
+  border: 1px solid rgba(75, 224, 163, 0.3);
 
-  border-radius: 12px;
+  border-radius: 13px;
 
   background: #02070b;
 
   box-shadow:
-    0 15px 40px rgba(0, 0, 0, 0.25);
+    0 15px 40px rgba(0, 0, 0, 0.3);
 }
 
-
-/* HEADER */
-
 .corrected-code-header {
-  min-height: 58px;
+  min-height: 62px;
 
   display: flex;
-
   align-items: center;
-
   justify-content: space-between;
 
   gap: 15px;
 
-  padding: 0 16px;
+  padding: 0 17px;
 
-  border-bottom: 1px solid rgba(75, 224, 163, 0.13);
+  border-bottom: 1px solid rgba(75, 224, 163, 0.14);
 
-  background: rgba(75, 224, 163, 0.035);
+  background: rgba(75, 224, 163, 0.04);
 }
 
 .corrected-code-title {
   display: flex;
-
   align-items: center;
 
   gap: 10px;
@@ -1192,43 +1077,35 @@ textarea {
   color: #65dfa8;
 
   font-size: 11px;
-
-  font-weight: 700;
-
-  letter-spacing: 0.8px;
+  font-weight: 800;
+  letter-spacing: 1px;
 }
 
 .code-check {
-  width: 25px;
-
-  height: 25px;
+  width: 27px;
+  height: 27px;
 
   display: grid;
-
   place-items: center;
 
-  border-radius: 6px;
+  border-radius: 7px;
 
   color: #64e2a7;
 
   background: rgba(75, 224, 163, 0.1);
 
-  border: 1px solid rgba(75, 224, 163, 0.15);
+  border: 1px solid rgba(75, 224, 163, 0.17);
 }
-
-
-/* ACTIONS */
 
 .corrected-code-actions {
   display: flex;
-
   align-items: center;
 
   gap: 8px;
 }
 
 .code-language {
-  padding: 6px 9px;
+  padding: 7px 10px;
 
   border: 1px solid rgba(75, 224, 163, 0.15);
 
@@ -1237,19 +1114,14 @@ textarea {
   color: #528b75;
 
   font-size: 8px;
-
-  font-weight: 600;
-
+  font-weight: 700;
   letter-spacing: 1px;
 }
 
-
-/* COPY BUTTON */
-
 .copy-code-btn {
-  min-height: 30px;
+  min-height: 32px;
 
-  padding: 0 11px;
+  padding: 0 12px;
 
   border: 1px solid rgba(76, 205, 255, 0.2);
 
@@ -1260,18 +1132,12 @@ textarea {
   color: #62cce9;
 
   font-size: 8px;
-
-  font-weight: 700;
-
+  font-weight: 800;
   letter-spacing: 0.8px;
 
   cursor: pointer;
 
-  transition:
-    background 0.2s ease,
-    border-color 0.2s ease,
-    color 0.2s ease,
-    transform 0.15s ease;
+  transition: 0.2s ease;
 }
 
 .copy-code-btn:hover {
@@ -1280,8 +1146,6 @@ textarea {
   border-color: rgba(76, 205, 255, 0.4);
 
   color: #9aeaff;
-
-  transform: translateY(-1px);
 }
 
 .copy-code-btn.copied {
@@ -1294,7 +1158,7 @@ textarea {
 
 
 /* =========================================================
-   CODE AREA
+   CODE DISPLAY
    ========================================================= */
 
 .corrected-code {
@@ -1310,7 +1174,7 @@ textarea {
 .corrected-code pre {
   margin: 0;
 
-  padding: 22px;
+  padding: 24px;
 
   min-width: max-content;
 
@@ -1342,11 +1206,8 @@ textarea {
   white-space: inherit;
 }
 
-
-/* CODE SCROLLBAR */
-
 .corrected-code::-webkit-scrollbar {
-  height: 7px;
+  height: 8px;
 }
 
 .corrected-code::-webkit-scrollbar-track {
@@ -1365,11 +1226,11 @@ textarea {
 
 
 /* =========================================================
-   DEMO NOTE
+   DEMO MODE
    ========================================================= */
 
 .demo-note {
-  padding: 10px 14px;
+  padding: 12px 15px;
 
   border-radius: 8px;
 
@@ -1380,18 +1241,19 @@ textarea {
   color: #9e8d69;
 
   font-size: 9px;
+
+  line-height: 1.6;
 }
 
 
 /* =========================================================
-   SECURITY NOTE
+   SECURITY
    ========================================================= */
 
 .security-note {
   display: flex;
 
   justify-content: center;
-
   align-items: center;
 
   gap: 7px;
@@ -1401,17 +1263,12 @@ textarea {
   color: #38545e;
 
   font-size: 8px;
-
-  letter-spacing: 0.2px;
 }
 
 .security-note span {
   color: #4fd9a1;
 
   font-size: 5px;
-
-  text-shadow:
-    0 0 8px rgba(79, 217, 161, 0.8);
 }
 
 
@@ -1435,9 +1292,7 @@ textarea {
   color: #344c55;
 
   font-size: 7px;
-
   font-weight: 700;
-
   letter-spacing: 1.2px;
 }
 
@@ -1448,7 +1303,6 @@ textarea {
 
 ::-webkit-scrollbar {
   width: 8px;
-
   height: 8px;
 }
 
@@ -1468,7 +1322,7 @@ textarea {
 
 
 /* =========================================================
-   RESPONSIVE — TABLET
+   TABLET
    ========================================================= */
 
 @media (max-width: 800px) {
@@ -1485,10 +1339,6 @@ textarea {
 
   .hero {
     margin-bottom: 40px;
-  }
-
-  .hero h1 {
-    font-size: clamp(40px, 10vw, 62px);
   }
 
   .result-top {
@@ -1513,20 +1363,18 @@ textarea {
 
   .field {
     padding-left: 20px;
-
     padding-right: 20px;
   }
 
   .error-tip {
     margin-left: 20px;
-
     margin-right: 20px;
   }
 }
 
 
 /* =========================================================
-   RESPONSIVE — MOBILE
+   MOBILE
    ========================================================= */
 
 @media (max-width: 600px) {
@@ -1539,10 +1387,7 @@ textarea {
 
   .brand-icon {
     width: 32px;
-
     height: 32px;
-
-    font-size: 9px;
   }
 
   .brand-name {
@@ -1563,14 +1408,6 @@ textarea {
     padding: 40px 0;
   }
 
-  .hero {
-    margin-bottom: 35px;
-  }
-
-  .hero-tag {
-    font-size: 7px;
-  }
-
   .hero h1 {
     font-size: 42px;
 
@@ -1579,8 +1416,6 @@ textarea {
 
   .hero p {
     font-size: 12px;
-
-    line-height: 1.7;
   }
 
   .panel {
@@ -1593,28 +1428,6 @@ textarea {
     gap: 12px;
 
     padding: 17px;
-  }
-
-  .panel-title {
-    gap: 10px;
-  }
-
-  .step {
-    width: 33px;
-
-    height: 33px;
-  }
-
-  .panel-title h2 {
-    font-size: 10px;
-  }
-
-  .panel-title p {
-    font-size: 8px;
-  }
-
-  .required {
-    font-size: 6px;
   }
 
   .field {
@@ -1637,8 +1450,6 @@ textarea {
 
   .error-tip {
     margin: 0 17px 17px;
-
-    padding: 12px;
   }
 
   .actions {
@@ -1679,7 +1490,20 @@ textarea {
   }
 
 
-  /* CORRECTED CODE MOBILE */
+  /* MOBILE SUGGESTED FIX */
+
+  .suggested-fix-header {
+    padding: 14px;
+  }
+
+  .suggested-fix-body {
+    padding: 15px;
+
+    font-size: 11px;
+  }
+
+
+  /* MOBILE CORRECTED CODE */
 
   .corrected-code-header {
     align-items: flex-start;
@@ -1707,14 +1531,6 @@ textarea {
     line-height: 1.7;
   }
 
-  .security-note {
-    text-align: center;
-
-    padding: 0 20px;
-
-    line-height: 1.5;
-  }
-
   .footer {
     align-items: center;
 
@@ -1728,7 +1544,7 @@ textarea {
 
 
 /* =========================================================
-   VERY SMALL SCREENS
+   SMALL PHONES
    ========================================================= */
 
 @media (max-width: 380px) {
@@ -1739,10 +1555,6 @@ textarea {
 
   .hero h1 {
     font-size: 36px;
-  }
-
-  .hero p {
-    font-size: 11px;
   }
 
   .result-heading h2 {

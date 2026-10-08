@@ -2,20 +2,26 @@ import React, { useState } from "react";
 
 const BACKEND_URL =
   import.meta.env.VITE_BACKEND_URL ||
-  import.meta.env.VITE_API_URL ||
   "https://debugsense-ai-xoft.onrender.com";
 
 function App() {
+  const [language, setLanguage] = useState("JavaScript");
   const [code, setCode] = useState("");
   const [error, setError] = useState("");
-  const [language, setLanguage] = useState("JavaScript");
-  const [result, setResult] = useState("");
+
+  const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
+  const [copied, setCopied] = useState(false);
+
   const analyzeError = async () => {
+    setMessage("");
+    setResult(null);
+    setCopied(false);
+
     if (!code.trim()) {
-      setMessage("Please enter your code.");
+      setMessage("Please enter your source code.");
       return;
     }
 
@@ -25,13 +31,9 @@ function App() {
     }
 
     setLoading(true);
-    setResult("");
-    setMessage("");
 
     try {
-      const apiUrl = `${BACKEND_URL.replace(/\/$/, "")}/api/debug`;
-
-      const response = await fetch(apiUrl, {
+      const response = await fetch(`${BACKEND_URL}/api/debug`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -47,7 +49,7 @@ function App() {
 
       if (!response.ok) {
         throw new Error(
-          data.message || `Server error: ${response.status}`
+          data.message || "Unable to analyze the code."
         );
       }
 
@@ -57,16 +59,33 @@ function App() {
         );
       }
 
-      setResult(
-        typeof data.result === "string"
-          ? data.result
-          : JSON.stringify(data.result, null, 2)
-      );
+      let analysis = data.result;
+
+      /*
+       * The backend may return the analysis as:
+       * 1. An object
+       * 2. A JSON string
+       * 3. A string containing JSON
+       *
+       * This handles all three cases.
+       */
+
+      if (typeof analysis === "string") {
+        try {
+          analysis = JSON.parse(analysis);
+        } catch {
+          analysis = {
+            explanation: analysis,
+          };
+        }
+      }
+
+      setResult(analysis);
     } catch (err) {
-      console.error("DebugSense error:", err);
+      console.error("DebugSense AI Error:", err);
 
       setMessage(
-        err.message || "Unable to connect to the backend."
+        err.message || "Failed to connect to the backend."
       );
     } finally {
       setLoading(false);
@@ -76,209 +95,162 @@ function App() {
   const clearAll = () => {
     setCode("");
     setError("");
-    setResult("");
+    setResult(null);
     setMessage("");
+    setCopied(false);
+  };
+
+  const copyCorrectedCode = async () => {
+    if (!result?.fixedCode) {
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(
+        formatCode(result.fixedCode)
+      );
+
+      setCopied(true);
+
+      setTimeout(() => {
+        setCopied(false);
+      }, 2000);
+    } catch (err) {
+      console.error("Copy failed:", err);
+    }
   };
 
   /*
-   * Convert the AI's markdown response into
-   * readable sections.
+   * Makes sure escaped newline characters such as:
+   *
+   * \n
+   *
+   * become actual lines in the code editor.
    */
-  const formatAIResponse = (text) => {
-    if (!text) return null;
-
-    const sections = [];
-
-    const cleaned = text
-      .replace(/\r\n/g, "\n")
-      .replace(/```[a-zA-Z0-9+#.-]*/g, "```");
-
-    const parts = cleaned.split("```");
-
-    let normalText = parts[0] || "";
-
-    const codeBlocks = [];
-
-    for (let i = 1; i < parts.length; i += 2) {
-      if (parts[i]) {
-        codeBlocks.push(parts[i].trim());
-      }
+  const formatCode = (value) => {
+    if (!value) {
+      return "";
     }
 
-    /*
-     * Look for common headings from AI responses.
-     */
-    const headingRegex =
-      /(Problem|Issue|Cause|Why.*?(?:happened|occurs)|Explanation|Solution|Fix|Corrected Code|Correct Code|How to Fix|Recommendation)/gi;
+    let formatted = String(value);
 
-    const lines = normalText
-      .split("\n")
-      .map((line) => line.trim())
-      .filter(Boolean);
+    formatted = formatted.replace(/\\n/g, "\n");
+    formatted = formatted.replace(/\\r/g, "\r");
+    formatted = formatted.replace(/\\t/g, "\t");
 
-    let currentHeading = "Analysis";
-    let currentContent = [];
+    formatted = formatted.replace(/\\"/g, '"');
+    formatted = formatted.replace(/\\'/g, "'");
 
-    const flushSection = () => {
-      if (currentContent.length > 0) {
-        sections.push({
-          heading: currentHeading,
-          content: currentContent.join("\n"),
-        });
-      }
-    };
+    return formatted.trim();
+  };
 
-    lines.forEach((line) => {
-      const match = line.match(
-        /^(?:#+\s*|[-*]\s*)?(Problem|Issue|Cause|Explanation|Solution|Fix|Corrected Code|Correct Code|How to Fix|Recommendation)\s*:?\s*(.*)$/i
-      );
-
-      if (match) {
-        flushSection();
-
-        currentHeading = match[1];
-
-        currentContent = match[2]
-          ? [match[2]]
-          : [];
-
-        return;
-      }
-
-      currentContent.push(line);
-    });
-
-    flushSection();
-
-    /*
-     * If the AI didn't use headings, display the
-     * entire response cleanly as one explanation.
-     */
-    if (sections.length === 0 && normalText.trim()) {
-      sections.push({
-        heading: "AI Analysis",
-        content: normalText.trim(),
-      });
+  const getSeverityClass = (severity) => {
+    if (!severity) {
+      return "";
     }
 
-    return (
-      <div className="ai-result">
+    const value = severity.toLowerCase();
 
-        {sections.map((section, index) => (
-          <div className="ai-section" key={index}>
+    if (value === "high") {
+      return "severity-high";
+    }
 
-            <div className="ai-section-title">
-              {section.heading === "Problem" && "🔍"}
-              {section.heading === "Issue" && "🔍"}
-              {section.heading === "Cause" && "⚙️"}
-              {section.heading === "Explanation" && "📖"}
-              {section.heading === "Solution" && "✅"}
-              {section.heading === "Fix" && "✅"}
-              {section.heading === "Recommendation" && "💡"}
-              {section.heading === "How to Fix" && "🛠️"}
-              {![
-                "Problem",
-                "Issue",
-                "Cause",
-                "Explanation",
-                "Solution",
-                "Fix",
-                "Recommendation",
-                "How to Fix",
-              ].includes(section.heading) && "✦"}
+    if (value === "medium") {
+      return "severity-medium";
+    }
 
-              <span>{section.heading}</span>
-            </div>
+    if (value === "low") {
+      return "severity-low";
+    }
 
-            <div className="ai-section-content">
-              {section.content}
-            </div>
-          </div>
-        ))}
+    return "";
+  };
 
-        {codeBlocks.length > 0 && (
-          <div className="corrected-code-section">
+  const displayValue = (value) => {
+    if (value === undefined || value === null) {
+      return "Not available";
+    }
 
-            <div className="corrected-code-header">
-              <div>
-                <span className="code-check">✓</span>
-                <span>Corrected Code</span>
-              </div>
+    if (typeof value === "object") {
+      return JSON.stringify(value, null, 2);
+    }
 
-              <span className="code-language">
-                {language}
-              </span>
-            </div>
-
-            {codeBlocks.map((block, index) => (
-              <div className="corrected-code" key={index}>
-                <pre>
-                  <code>{block}</code>
-                </pre>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-    );
+    return String(value);
   };
 
   return (
     <div className="app">
 
-      {/* NAVBAR */}
+      {/* =====================================================
+          NAVBAR
+          ===================================================== */}
+
       <nav className="navbar">
+
         <div className="brand">
+
           <div className="brand-icon">
-            &lt;/&gt;
+            DS
           </div>
 
           <div>
             <div className="brand-name">
-              DebugSense<span> AI</span>
+              Debug<span>Sense</span> AI
             </div>
 
             <div className="brand-subtitle">
-              Intelligent Code Debugging
+              INTELLIGENT CODE DEBUGGER
             </div>
           </div>
+
         </div>
 
         <div className="online">
           <span className="online-dot"></span>
           SYSTEM ONLINE
         </div>
+
       </nav>
 
-      {/* MAIN */}
+
+      {/* =====================================================
+          MAIN
+          ===================================================== */}
+
       <main className="main">
 
         {/* HERO */}
+
         <section className="hero">
 
           <div className="hero-tag">
             <span>✦</span>
-            AI POWERED DEBUGGING
+            AI-POWERED DEBUGGING
           </div>
 
           <h1>
-            Find the bug.
+            Debug Your Code.
             <br />
-            <span>Fix the code.</span>
+            <span>Understand the Error.</span>
           </h1>
 
           <p>
-            Paste your code and error message.
-            DebugSense AI analyzes the problem
-            and provides a clear solution.
+            Paste your code and error message. DebugSense AI
+            analyzes the problem, explains the root cause,
+            suggests a fix, and generates corrected code.
           </p>
 
         </section>
 
-        {/* INPUTS */}
+
+        {/* =================================================
+            WORKSPACE
+            ================================================= */}
+
         <section className="workspace">
 
-          {/* CODE */}
+          {/* CODE PANEL */}
+
           <div className="panel">
 
             <div className="panel-top">
@@ -290,25 +262,30 @@ function App() {
                 </div>
 
                 <div>
-                  <h2>CODE</h2>
+                  <h2>
+                    SOURCE CODE
+                  </h2>
 
                   <p>
-                    Enter the code causing the problem
+                    Enter the code containing the error
                   </p>
                 </div>
 
               </div>
 
-              <span className="required">
+              <div className="required">
                 REQUIRED
-              </span>
+              </div>
 
             </div>
+
+
+            {/* LANGUAGE */}
 
             <div className="field">
 
               <label>
-                LANGUAGE
+                PROGRAMMING LANGUAGE
               </label>
 
               <select
@@ -323,20 +300,21 @@ function App() {
                 <option>C</option>
                 <option>C++</option>
                 <option>C#</option>
-                <option>TypeScript</option>
                 <option>PHP</option>
-                <option>Go</option>
-                <option>Rust</option>
+                <option>TypeScript</option>
               </select>
 
             </div>
+
+
+            {/* SOURCE CODE */}
 
             <div className="field">
 
               <div className="label-row">
 
                 <label>
-                  YOUR CODE
+                  SOURCE CODE
                 </label>
 
                 <span className="hint">
@@ -355,9 +333,9 @@ function App() {
                     <span></span>
                   </div>
 
-                  <span className="editor-language">
-                    {language}
-                  </span>
+                  <div className="editor-language">
+                    {language.toUpperCase()}
+                  </div>
 
                 </div>
 
@@ -366,11 +344,7 @@ function App() {
                   onChange={(e) =>
                     setCode(e.target.value)
                   }
-                  placeholder={`const users = undefined;
-
-users.map(user => {
-  console.log(user);
-});`}
+                  placeholder={`Paste your ${language} code here...`}
                   spellCheck="false"
                 />
 
@@ -380,7 +354,9 @@ users.map(user => {
 
           </div>
 
-          {/* ERROR */}
+
+          {/* ERROR PANEL */}
+
           <div className="panel">
 
             <div className="panel-top">
@@ -392,20 +368,23 @@ users.map(user => {
                 </div>
 
                 <div>
-                  <h2>ERROR</h2>
+                  <h2>
+                    ERROR INFORMATION
+                  </h2>
 
                   <p>
-                    Paste the exact error message
+                    Tell us what went wrong
                   </p>
                 </div>
 
               </div>
 
-              <span className="required">
+              <div className="required">
                 REQUIRED
-              </span>
+              </div>
 
             </div>
+
 
             <div className="field">
 
@@ -416,7 +395,7 @@ users.map(user => {
                 </label>
 
                 <span className="hint">
-                  From your compiler or console
+                  Include the complete error
                 </span>
 
               </div>
@@ -428,7 +407,7 @@ users.map(user => {
                   onChange={(e) =>
                     setError(e.target.value)
                   }
-                  placeholder="TypeError: Cannot read properties of undefined (reading 'map')"
+                  placeholder="Example: TypeError: Cannot read properties of undefined..."
                   spellCheck="false"
                 />
 
@@ -436,126 +415,398 @@ users.map(user => {
 
             </div>
 
+
             <div className="error-tip">
 
-              <span>💡</span>
+              <span>ⓘ</span>
 
               <div>
-                <strong>Tip</strong>
+
+                <strong>
+                  FOR BETTER RESULTS
+                </strong>
 
                 <p>
-                  Copy the complete error message,
-                  including the line number if available.
+                  Provide the complete error message
+                  along with the source code that caused it.
                 </p>
+
               </div>
 
             </div>
 
           </div>
+
+
+          {/* SYSTEM MESSAGE */}
+
+          {message && (
+            <div className="message-box">
+
+              <span>⚠</span>
+
+              <div>
+
+                <strong>
+                  SYSTEM MESSAGE
+                </strong>
+
+                <p>
+                  {message}
+                </p>
+
+              </div>
+
+            </div>
+          )}
+
+
+          {/* ACTION BUTTONS */}
+
+          <div className="actions">
+
+            <button
+              className="clear-btn"
+              onClick={clearAll}
+              disabled={loading}
+            >
+              CLEAR
+            </button>
+
+            <button
+              className="analyze-btn"
+              onClick={analyzeError}
+              disabled={loading}
+            >
+
+              {loading ? (
+                <>
+                  <span className="spinner"></span>
+                  ANALYZING...
+                </>
+              ) : (
+                <>
+                  ✦ &nbsp; ANALYZE ERROR
+                </>
+              )}
+
+            </button>
+
+          </div>
+
+
+          {/* =================================================
+              RESULT
+              ================================================= */}
+
+          {result && (
+
+            <section className="result-panel">
+
+              {/* RESULT HEADER */}
+
+              <div className="result-top">
+
+                <div className="result-heading">
+
+                  <div className="result-icon">
+                    ✓
+                  </div>
+
+                  <div>
+
+                    <div className="result-label">
+                      03 — AI ANALYSIS
+                    </div>
+
+                    <h2>
+                      Debugging Analysis
+                    </h2>
+
+                  </div>
+
+                </div>
+
+                <div className="result-status">
+                  ANALYSIS COMPLETE
+                </div>
+
+              </div>
+
+
+              <div className="result-body">
+
+                <div className="ai-result">
+
+
+                  {/* =========================================
+                      ERROR INFORMATION
+                      ========================================= */}
+
+                  <div className="ai-section">
+
+                    <div className="ai-section-title">
+                      ✦ ERROR INFORMATION
+                    </div>
+
+                    <div className="error-info-grid">
+
+                      <div className="info-card">
+
+                        <div className="info-card-label">
+                          ERROR TYPE
+                        </div>
+
+                        <div className="info-card-value">
+                          {displayValue(
+                            result.errorType
+                          )}
+                        </div>
+
+                      </div>
+
+
+                      <div className="info-card">
+
+                        <div className="info-card-label">
+                          SEVERITY
+                        </div>
+
+                        <div
+                          className={`info-card-value ${getSeverityClass(
+                            result.severity
+                          )}`}
+                        >
+                          {displayValue(
+                            result.severity
+                          )}
+                        </div>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+
+                  {/* =========================================
+                      ROOT CAUSE
+                      ========================================= */}
+
+                  <div className="ai-section">
+
+                    <div className="ai-section-title">
+                      ⌁ ROOT CAUSE
+                    </div>
+
+                    <div className="ai-section-content">
+                      {displayValue(
+                        result.rootCause
+                      )}
+                    </div>
+
+                  </div>
+
+
+                  {/* =========================================
+                      EXPLANATION
+                      ========================================= */}
+
+                  <div className="ai-section">
+
+                    <div className="ai-section-title">
+                      ◈ EXPLANATION
+                    </div>
+
+                    <div className="ai-section-content">
+                      {displayValue(
+                        result.explanation
+                      )}
+                    </div>
+
+                  </div>
+
+
+                  {/* =========================================
+                      SUGGESTED FIX
+                      SEPARATE SECTION
+                      ========================================= */}
+
+                  <div className="suggested-fix-section">
+
+                    <div className="suggested-fix-header">
+
+                      <div className="suggested-fix-title">
+
+                        <div className="fix-icon">
+                          💡
+                        </div>
+
+                        <div>
+
+                          <div className="fix-label">
+                            RECOMMENDED SOLUTION
+                          </div>
+
+                          <h3>
+                            Suggested Fix
+                          </h3>
+
+                        </div>
+
+                      </div>
+
+                    </div>
+
+
+                    <div className="suggested-fix-body">
+
+                      {displayValue(
+                        result.suggestedFix
+                      )}
+
+                    </div>
+
+                  </div>
+
+
+                  {/* =========================================
+                      CORRECTED CODE
+                      SEPARATE SECTION
+                      ========================================= */}
+
+                  {result.fixedCode && (
+
+                    <div className="corrected-code-section">
+
+                      <div className="corrected-code-header">
+
+                        <div className="corrected-code-title">
+
+                          <div className="code-check">
+                            ✓
+                          </div>
+
+                          <span>
+                            CORRECTED CODE
+                          </span>
+
+                        </div>
+
+
+                        <div className="corrected-code-actions">
+
+                          <span className="code-language">
+                            {language}
+                          </span>
+
+                          <button
+                            className={`copy-code-btn ${
+                              copied ? "copied" : ""
+                            }`}
+                            onClick={
+                              copyCorrectedCode
+                            }
+                          >
+                            {copied
+                              ? "✓ COPIED"
+                              : "COPY CODE"}
+                          </button>
+
+                        </div>
+
+                      </div>
+
+
+                      <div className="corrected-code">
+
+                        <pre>
+                          <code>
+                            {formatCode(
+                              result.fixedCode
+                            )}
+                          </code>
+                        </pre>
+
+                      </div>
+
+                    </div>
+
+                  )}
+
+
+                  {/* =========================================
+                      PREVENTION TIP
+                      ========================================= */}
+
+                  {result.preventionTip && (
+
+                    <div className="ai-section">
+
+                      <div className="ai-section-title">
+                        🛡 PREVENTION TIP
+                      </div>
+
+                      <div className="ai-section-content">
+                        {displayValue(
+                          result.preventionTip
+                        )}
+                      </div>
+
+                    </div>
+
+                  )}
+
+
+                  {/* DEMO MODE */}
+
+                  {result.demoMode === true && (
+
+                    <div className="demo-note">
+
+                      Demo Mode is currently active.
+                      The displayed analysis is based on
+                      the available demonstration scenarios.
+
+                    </div>
+
+                  )}
+
+                </div>
+
+              </div>
+
+            </section>
+
+          )}
 
         </section>
 
-        {/* ERROR MESSAGE */}
-        {message && (
-          <div className="message-box">
 
-            <span>⚠</span>
-
-            <div>
-              <strong>
-                Something went wrong
-              </strong>
-
-              <p>
-                {message}
-              </p>
-            </div>
-
-          </div>
-        )}
-
-        {/* BUTTONS */}
-        <div className="actions">
-
-          <button
-            className="clear-btn"
-            onClick={clearAll}
-            disabled={loading}
-          >
-            CLEAR
-          </button>
-
-          <button
-            className="analyze-btn"
-            onClick={analyzeError}
-            disabled={loading}
-          >
-            {loading ? (
-              <>
-                <span className="spinner"></span>
-                ANALYZING...
-              </>
-            ) : (
-              <>✦ ANALYZE ERROR</>
-            )}
-          </button>
-
-        </div>
-
-        {/* AI RESULT */}
-        {result && (
-          <section className="result-panel">
-
-            <div className="result-top">
-
-              <div className="result-heading">
-
-                <div className="result-icon">
-                  ✓
-                </div>
-
-                <div>
-
-                  <div className="result-label">
-                    03 — AI ANALYSIS
-                  </div>
-
-                  <h2>
-                    Debugging Analysis
-                  </h2>
-
-                </div>
-
-              </div>
-
-              <div className="result-status">
-                ANALYSIS COMPLETE
-              </div>
-
-            </div>
-
-            <div className="result-body">
-              {formatAIResponse(result)}
-            </div>
-
-          </section>
-        )}
+        {/* SECURITY */}
 
         <div className="security-note">
+
           <span>●</span>
-          Your code is analyzed securely through DebugSense AI
+
+          Your code is analyzed securely through
+          DebugSense AI.
+
         </div>
 
       </main>
 
+
+      {/* FOOTER */}
+
       <footer className="footer">
 
         <span>
-          DEBUGSENSE AI © 2026
+          DEBUGSENSE AI
         </span>
 
         <span>
-          Built for developers
+          INTELLIGENT DEBUGGING PLATFORM
         </span>
 
       </footer>
